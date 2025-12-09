@@ -4,7 +4,7 @@ A Next.js application for scheduling and sending Telegram messages in multiple l
 
 ## Live Dashboard
 
-**[loopScheduledMessagesTelegramBot.vercel.app](https://loopScheduledMessagesTelegramBot.vercel.app)**
+https://loop-scheduled-messages-telegram-bo.vercel.app/
 
 ## Features
 
