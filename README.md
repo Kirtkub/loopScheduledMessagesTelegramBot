@@ -1,6 +1,6 @@
 # Telegram Scheduled Messages Bot
 
-A Next.js application for scheduling and sending Telegram messages in multiple languages (Italian, Spanish, English) with automated delivery and admin reporting.
+A Next.js application for scheduling and sending Telegram messages in multiple languages (Italian, Spanish, English) with automated daily delivery and admin reporting.
 
 ## Live Dashboard
 
@@ -10,9 +10,28 @@ A Next.js application for scheduling and sending Telegram messages in multiple l
 
 - **5 Configurable Messages** - Each with multilingual text, media attachments, CTA buttons, and schedule patterns
 - **Web Dashboard** - Preview messages, test sending, and see bot status
-- **Automated Scheduling** - Messages sent automatically based on Madrid timezone schedules
+- **Daily Automated Sending** - Messages sent at 9:00 AM Madrid time based on schedule patterns
 - **Admin Reports** - Receive delivery statistics and reached user lists after each broadcast
 - **Content Protection** - Option to prevent forwarding/saving of messages
+
+## How Scheduling Works
+
+The cron job runs **once per day at 9:00 AM Madrid time** (compatible with Vercel Hobby plan). All messages scheduled for that day are sent when the cron runs.
+
+### Schedule Pattern Formats
+
+| Pattern | Description |
+|---------|-------------|
+| `SUNDAY` | Every Sunday |
+| `MONDAY` | Every Monday |
+| `TUESDAY` | Every Tuesday |
+| ... | etc. |
+| `SUNDAY-1` | First Sunday of every month |
+| `MONDAY-2` | Second Monday of every month |
+| `FRIDAY-3` | Third Friday of every month |
+| `MONTHLY-01` | 1st day of every month |
+| `MONTHLY-15` | 15th day of every month |
+| `MONTHLY-28` | 28th day of every month |
 
 ## Deployment Guide
 
@@ -83,17 +102,7 @@ Each message supports:
 - Media attachments (Telegram file_ids)
 - CTA buttons with URLs
 - Content protection
-- Multiple schedule patterns
-
-### Schedule Pattern Formats
-
-All times use Madrid timezone (Europe/Madrid):
-
-| Pattern | Description |
-|---------|-------------|
-| `SUNDAY-21:00` | Every Sunday at 21:00 |
-| `MONDAY-2-10:00` | Second Monday of the month at 10:00 |
-| `MONTHLY-15-12:00` | 15th day of every month at 12:00 |
+- Day-based schedule patterns
 
 ## Admin Configuration
 
@@ -130,7 +139,7 @@ src/
 ├── app/
 │   ├── page.tsx              # Dashboard
 │   └── api/
-│       ├── cron/route.ts     # Automated sending
+│       ├── cron/route.ts     # Daily cron job
 │       ├── test-send/route.ts # Test messages
 │       ├── bot-info/route.ts  # Bot info API
 │       └── messages/route.ts  # Message configs

@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { allMessages } from '@/config/messages';
-import { shouldSendNow } from '@/lib/scheduler';
+import { shouldSendToday } from '@/lib/scheduler';
 import { sendMessageToAllUsers } from '@/lib/sender';
 
-// Vercel cron job endpoint
-// This should be called every minute by Vercel cron
 export async function GET(request: NextRequest) {
-  // Verify cron secret for security (optional but recommended)
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
   
@@ -16,9 +13,8 @@ export async function GET(request: NextRequest) {
   
   const results: { messageId: string; sent: boolean; error?: string }[] = [];
   
-  // Check each message to see if it should be sent now
   for (const message of allMessages) {
-    if (shouldSendNow(message.schedule)) {
+    if (shouldSendToday(message.schedule)) {
       try {
         await sendMessageToAllUsers(message);
         results.push({ messageId: message.id, sent: true });

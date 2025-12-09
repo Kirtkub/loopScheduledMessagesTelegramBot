@@ -1,33 +1,42 @@
-import { toZonedTime, format } from 'date-fns-tz';
-import { getDay, getDate } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
+import { getDay, getDate, startOfMonth, addDays } from 'date-fns';
 
-// Madrid timezone
 const TIMEZONE = 'Europe/Madrid';
 
-// Get current time in Madrid
 export function getMadridTime(): Date {
   return toZonedTime(new Date(), TIMEZONE);
 }
 
-// Parse schedule pattern and check if current time matches
-// Patterns:
-// - "SUNDAY-21:00" - Every Sunday at 21:00
-// - "MONDAY-12:00" - Every Monday at 12:00
-// - "SUNDAY-1-19:00" - First Sunday of month at 19:00
-// - "MONTHLY-07-06:00" - 7th of every month at 06:00
-export function shouldSendNow(schedulePatterns: string[]): boolean {
+function getNthWeekdayOccurrence(date: Date, targetWeekday: number): number {
+  const dayOfMonth = getDate(date);
+  const monthStart = startOfMonth(date);
+  
+  let firstOccurrence = monthStart;
+  const startDayOfWeek = getDay(monthStart);
+  
+  let daysToAdd = targetWeekday - startDayOfWeek;
+  if (daysToAdd < 0) {
+    daysToAdd += 7;
+  }
+  firstOccurrence = addDays(monthStart, daysToAdd);
+  
+  const firstOccurrenceDay = getDate(firstOccurrence);
+  
+  if (dayOfMonth < firstOccurrenceDay) {
+    return 0;
+  }
+  
+  return Math.floor((dayOfMonth - firstOccurrenceDay) / 7) + 1;
+}
+
+export function shouldSendToday(schedulePatterns: string[]): boolean {
   if (!schedulePatterns || schedulePatterns.length === 0) {
     return false;
   }
   
   const now = getMadridTime();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const currentDayOfWeek = getDay(now); // 0 = Sunday, 1 = Monday, etc.
+  const currentDayOfWeek = getDay(now);
   const currentDayOfMonth = getDate(now);
-  
-  // Calculate which occurrence of the weekday this is in the month
-  const weekOccurrence = Math.ceil(currentDayOfMonth / 7);
   
   const dayNameToNumber: { [key: string]: number } = {
     'SUNDAY': 0,
@@ -43,36 +52,23 @@ export function shouldSendNow(schedulePatterns: string[]): boolean {
     const parts = pattern.split('-');
     
     if (parts[0] === 'MONTHLY') {
-      // Format: MONTHLY-DD-HH:MM
       const dayOfMonth = parseInt(parts[1], 10);
-      const [hour, minute] = parts[2].split(':').map(n => parseInt(n, 10));
-      
-      if (currentDayOfMonth === dayOfMonth && 
-          currentHour === hour && 
-          currentMinute === minute) {
+      if (currentDayOfMonth === dayOfMonth) {
         return true;
       }
     } else if (dayNameToNumber[parts[0]] !== undefined) {
       const targetDay = dayNameToNumber[parts[0]];
       
-      if (parts.length === 2) {
-        // Format: DAY-HH:MM (every week)
-        const [hour, minute] = parts[1].split(':').map(n => parseInt(n, 10));
-        
-        if (currentDayOfWeek === targetDay && 
-            currentHour === hour && 
-            currentMinute === minute) {
-          return true;
-        }
-      } else if (parts.length === 3) {
-        // Format: DAY-N-HH:MM (Nth occurrence of day in month)
-        const occurrence = parseInt(parts[1], 10);
-        const [hour, minute] = parts[2].split(':').map(n => parseInt(n, 10));
-        
-        if (currentDayOfWeek === targetDay && 
-            weekOccurrence === occurrence && 
-            currentHour === hour && 
-            currentMinute === minute) {
+      if (currentDayOfWeek !== targetDay) {
+        continue;
+      }
+      
+      if (parts.length === 1) {
+        return true;
+      } else if (parts.length === 2) {
+        const targetOccurrence = parseInt(parts[1], 10);
+        const actualOccurrence = getNthWeekdayOccurrence(now, targetDay);
+        if (actualOccurrence === targetOccurrence) {
           return true;
         }
       }
@@ -82,23 +78,11 @@ export function shouldSendNow(schedulePatterns: string[]): boolean {
   return false;
 }
 
-// Get next scheduled time for display purposes
-export function getNextScheduledTime(schedulePatterns: string[]): string | null {
-  if (!schedulePatterns || schedulePatterns.length === 0) {
-    return null;
-  }
-  
-  // For simplicity, return the first pattern formatted nicely
-  const pattern = schedulePatterns[0];
-  return formatSchedulePattern(pattern);
-}
-
-// Format a schedule pattern for human-readable display
 export function formatSchedulePattern(pattern: string): string {
   const parts = pattern.split('-');
   
   if (parts[0] === 'MONTHLY') {
-    return `Every month on day ${parts[1]} at ${parts[2]} (Madrid time)`;
+    return `Every month on day ${parts[1]}`;
   }
   
   const dayNames: { [key: string]: string } = {
@@ -113,12 +97,12 @@ export function formatSchedulePattern(pattern: string): string {
   
   const dayName = dayNames[parts[0]] || parts[0];
   
-  if (parts.length === 2) {
-    return `Every ${dayName} at ${parts[1]} (Madrid time)`;
-  } else if (parts.length === 3) {
+  if (parts.length === 1) {
+    return `Every ${dayName}`;
+  } else if (parts.length === 2) {
     const ordinals = ['', '1st', '2nd', '3rd', '4th', '5th'];
     const occurrence = ordinals[parseInt(parts[1], 10)] || parts[1];
-    return `${occurrence} ${dayName} of each month at ${parts[2]} (Madrid time)`;
+    return `${occurrence} ${dayName} of each month`;
   }
   
   return pattern;

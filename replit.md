@@ -42,10 +42,12 @@ Each message file contains:
 - `buttons`: CTA buttons with localized text and URLs
 - `schedule`: Array of schedule patterns
 
-### Schedule Pattern Formats (Madrid Timezone)
-- `SUNDAY-21:00`: Every Sunday at 21:00
-- `MONDAY-2-10:00`: Second Monday of month at 10:00
-- `MONTHLY-15-12:00`: 15th day of month at 12:00
+### Schedule Pattern Formats (Day-based)
+The cron runs once daily at 9:00 AM Madrid time. Messages scheduled for that day are sent when the cron runs.
+
+- `SUNDAY`: Every Sunday
+- `MONDAY-2`: Second Monday of month
+- `MONTHLY-15`: 15th day of month
 
 ### Admin Configuration (src/config/adminUserId.json)
 Contains the Telegram user ID for receiving reports and test messages.

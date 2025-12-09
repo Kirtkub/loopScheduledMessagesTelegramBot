@@ -269,7 +269,7 @@ export default function Dashboard() {
           <h2 className="font-semibold text-blue-800 mb-2">Configuration Info</h2>
           <ul className="text-sm text-blue-700 list-disc list-inside">
             <li>Click the <strong>Edit</strong> button on each message to modify it on GitHub</li>
-            <li>All times are in Madrid timezone (Europe/Madrid)</li>
+            <li>Messages are sent daily at <strong>9:00 AM Madrid time</strong></li>
             <li>Admin reports are sent after each broadcast</li>
           </ul>
         </div>
