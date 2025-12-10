@@ -9,14 +9,26 @@ https://loop-scheduled-messages-telegram-bo.vercel.app/
 ## Features
 
 - **5 Configurable Messages** - Each with multilingual text, media attachments, CTA buttons, and schedule patterns
-- **Web Dashboard** - Preview messages, test sending, and see bot status
-- **Daily Automated Sending** - Messages sent at 9:00 AM Madrid time based on schedule patterns
+- **Photos & Videos Support** - Send albums with mixed photos and videos, displayed with correct proportions
+- **Web Dashboard** - Preview messages with media thumbnails, test sending, and see bot status
+- **Configurable Execution Time** - Set daily sending time in `src/config/setHour.ts`
+- **Auto-Delete Messages** - Configure message lifetime (messageLifeHours) to auto-delete after specified hours
+- **Daily Automated Sending** - Messages sent at configured time (default 9:00 AM Madrid time) based on schedule patterns
 - **Admin Reports** - Receive delivery statistics and reached user lists after each broadcast
 - **Content Protection** - Option to prevent forwarding/saving of messages
 
 ## How Scheduling Works
 
-The cron job runs **once per day at 9:00 AM Madrid time** (compatible with Vercel Hobby plan). All messages scheduled for that day are sent when the cron runs.
+The cron job runs **once per day at the configured time** (default: 9:00 AM Madrid time, compatible with Vercel Hobby plan). All messages scheduled for that day are sent when the cron runs.
+
+### Configuring Execution Time
+
+Edit `src/config/setHour.ts` to change when messages are sent:
+
+```typescript
+export const DAILY_EXECUTION_TIME = "09:00";  // Format: "HH:MM" (24-hour)
+export const TIMEZONE = "Europe/Madrid";
+```
 
 ### Schedule Pattern Formats
 
@@ -99,9 +111,12 @@ Edit the message files directly on GitHub:
 
 Each message supports:
 - Multilingual text (Italian, Spanish, English)
-- Media attachments (Telegram file_ids)
+- Photo attachments (media_it, media_es, media_en - Telegram file_ids)
+- Video attachments (video_it, video_es, video_en - Telegram file_ids)
+- Mixed photo/video albums with correct aspect ratios
 - CTA buttons with URLs
 - Content protection
+- Auto-delete timer (messageLifeHours: 24 = delete after 24h, 0 = never delete)
 - Day-based schedule patterns
 
 ## Admin Configuration
@@ -137,18 +152,19 @@ npm run build
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Dashboard
+│   ├── page.tsx              # Dashboard with media previews
 │   └── api/
 │       ├── cron/route.ts     # Daily cron job
 │       ├── test-send/route.ts # Test messages
 │       ├── bot-info/route.ts  # Bot info API
-│       └── messages/route.ts  # Message configs
+│       └── messages/route.ts  # Message configs & file preview
 ├── config/
 │   ├── message1-5.ts         # Message configurations
+│   ├── setHour.ts            # Daily execution time config
 │   └── adminUserId.json      # Admin ID
 ├── lib/
 │   ├── redis.ts              # Redis connection
-│   ├── telegram.ts           # Telegram API
+│   ├── telegram.ts           # Telegram API (photos, videos, auto-delete)
 │   ├── scheduler.ts          # Schedule parsing
 │   └── sender.ts             # Broadcasting
 └── types/

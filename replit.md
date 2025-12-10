@@ -37,13 +37,20 @@ src/
 Each message file contains:
 - `id`: Unique message identifier
 - `text_it`, `text_es`, `text_en`: Localized message text (HTML supported)
-- `media_it`, `media_es`, `media_en`: Telegram file_id arrays for albums
+- `media_it`, `media_es`, `media_en`: Telegram photo file_id arrays
+- `video_it`, `video_es`, `video_en`: Telegram video file_id arrays (can be mixed with photos)
 - `protect_content`: Prevent forwarding/saving
 - `buttons`: CTA buttons with localized text and URLs
 - `schedule`: Array of schedule patterns
+- `messageLifeHours`: Hours after which the message auto-deletes (0 = never)
+
+### Execution Time Configuration (src/config/setHour.ts)
+Configure the daily execution time for scheduled messages:
+- `DAILY_EXECUTION_TIME`: Time in "HH:MM" format (e.g., "09:00")
+- `TIMEZONE`: Timezone for execution (default: "Europe/Madrid")
 
 ### Schedule Pattern Formats (Day-based)
-The cron runs once daily at 9:00 AM Madrid time. Messages scheduled for that day are sent when the cron runs.
+The cron runs once daily at the configured time (default 9:00 AM Madrid time). Messages scheduled for that day are sent when the cron runs.
 
 - `SUNDAY`: Every Sunday
 - `MONDAY-2`: Second Monday of month
@@ -116,3 +123,11 @@ npm run build
 - Created schedule pattern parser with Madrid timezone support
 - Built web dashboard with message previews and test functionality
 - Configured Vercel cron job for automated message delivery
+
+### December 2024 Updates
+- Added `src/config/setHour.ts` for configurable daily execution time
+- Added video support: `video_it`, `video_es`, `video_en` fields for video file_ids
+- Photos and videos can now be mixed in albums with correct aspect ratios
+- Added `messageLifeHours` field for auto-message deletion (default: 24 hours, 0 = never)
+- Dashboard now shows photo/video previews with correct proportions
+- Dashboard displays message lifetime information for each message

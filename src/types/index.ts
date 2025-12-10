@@ -26,6 +26,12 @@ export interface CTAButton {
   url: string;
 }
 
+// Media item with type specification (photo or video)
+export interface MediaItem {
+  type: 'photo' | 'video';
+  file_id: string;
+}
+
 // Message configuration structure
 export interface MessageConfig {
   // Unique identifier for the message
@@ -38,12 +44,19 @@ export interface MessageConfig {
   // HTML-formatted text in English (used for all other languages)
   text_en: string;
   
-  // Array of Telegram file_ids to send as album (Italian users)
+  // Array of Telegram photo file_ids to send as album (Italian users)
   media_it: string[];
-  // Array of Telegram file_ids to send as album (Spanish users)
+  // Array of Telegram photo file_ids to send as album (Spanish users)
   media_es: string[];
-  // Array of Telegram file_ids to send as album (English/other users)
+  // Array of Telegram photo file_ids to send as album (English/other users)
   media_en: string[];
+  
+  // Array of Telegram video file_ids to send as album (Italian users)
+  video_it: string[];
+  // Array of Telegram video file_ids to send as album (Spanish users)
+  video_es: string[];
+  // Array of Telegram video file_ids to send as album (English/other users)
+  video_en: string[];
   
   // Whether to protect content from forwarding/saving
   protect_content: boolean;
@@ -58,6 +71,10 @@ export interface MessageConfig {
   // "MONTHLY-07-06:00" - 7th of every month at 06:00
   // "MONDAY-12:00" - Every Monday at 12:00
   schedule: string[];
+  
+  // Hours after which the message auto-deletes (0 = never delete)
+  // Default is 24 hours
+  messageLifeHours: number;
 }
 
 // Result of sending message to a user

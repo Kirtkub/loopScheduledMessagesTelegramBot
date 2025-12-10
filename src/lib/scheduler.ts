@@ -1,7 +1,8 @@
 import { toZonedTime } from 'date-fns-tz';
 import { getDay, getDate, startOfMonth, addDays } from 'date-fns';
+import { TIMEZONE, DAILY_EXECUTION_TIME } from '@/config/setHour';
 
-const TIMEZONE = 'Europe/Madrid';
+export { TIMEZONE, DAILY_EXECUTION_TIME };
 
 export function getMadridTime(): Date {
   return toZonedTime(new Date(), TIMEZONE);

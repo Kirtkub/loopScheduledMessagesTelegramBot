@@ -1,4 +1,4 @@
-import { TelegramUser, MessageConfig, SendResult, SendReport, Language } from '@/types';
+import { TelegramUser, MessageConfig, SendResult, SendReport, Language, MediaItem } from '@/types';
 import adminConfig from '@/config/adminUserId.json';
 
 const TELEGRAM_API = 'https://api.telegram.org/bot';
@@ -11,7 +11,6 @@ function getBotToken(): string {
   return token;
 }
 
-// Get text in user's language
 function getLocalizedText(config: MessageConfig, lang: Language): string {
   switch (lang) {
     case 'it': return config.text_it;
@@ -20,16 +19,23 @@ function getLocalizedText(config: MessageConfig, lang: Language): string {
   }
 }
 
-// Get media in user's language
-function getLocalizedMedia(config: MessageConfig, lang: Language): string[] {
-  switch (lang) {
-    case 'it': return config.media_it;
-    case 'es': return config.media_es;
-    default: return config.media_en;
+function getLocalizedMedia(config: MessageConfig, lang: Language): MediaItem[] {
+  const photos = lang === 'it' ? config.media_it : lang === 'es' ? config.media_es : config.media_en;
+  const videos = lang === 'it' ? config.video_it : lang === 'es' ? config.video_es : config.video_en;
+  
+  const mediaItems: MediaItem[] = [];
+  
+  for (const fileId of photos) {
+    mediaItems.push({ type: 'photo', file_id: fileId });
   }
+  
+  for (const fileId of videos) {
+    mediaItems.push({ type: 'video', file_id: fileId });
+  }
+  
+  return mediaItems;
 }
 
-// Get button text in user's language
 function getLocalizedButtonText(button: { text_it: string; text_es: string; text_en: string }, lang: Language): string {
   switch (lang) {
     case 'it': return button.text_it;
@@ -38,7 +44,6 @@ function getLocalizedButtonText(button: { text_it: string; text_es: string; text
   }
 }
 
-// Build inline keyboard from buttons
 function buildInlineKeyboard(config: MessageConfig, lang: Language): object | undefined {
   const validButtons = config.buttons.filter(btn => 
     btn.url && (btn.text_it || btn.text_es || btn.text_en)
@@ -54,13 +59,12 @@ function buildInlineKeyboard(config: MessageConfig, lang: Language): object | un
   };
 }
 
-// Send a simple text message
 async function sendMessage(
   chatId: number,
   text: string,
   replyMarkup?: object,
   protectContent: boolean = false
-): Promise<boolean> {
+): Promise<{ success: boolean; messageId?: number }> {
   try {
     const response = await fetch(`${TELEGRAM_API}${getBotToken()}/sendMessage`, {
       method: 'POST',
@@ -75,24 +79,26 @@ async function sendMessage(
     });
     
     const result = await response.json();
-    return result.ok;
+    if (result.ok) {
+      return { success: true, messageId: result.result.message_id };
+    }
+    return { success: false };
   } catch (error) {
     console.error(`Error sending message to ${chatId}:`, error);
-    return false;
+    return { success: false };
   }
 }
 
-// Send a media group (album)
 async function sendMediaGroup(
   chatId: number,
-  mediaIds: string[],
+  mediaItems: MediaItem[],
   caption: string,
   protectContent: boolean = false
-): Promise<boolean> {
+): Promise<{ success: boolean; messageIds?: number[] }> {
   try {
-    const media = mediaIds.map((fileId, index) => ({
-      type: 'photo',
-      media: fileId,
+    const media = mediaItems.map((item, index) => ({
+      type: item.type,
+      media: item.file_id,
       caption: index === 0 ? caption : undefined,
       parse_mode: index === 0 ? 'HTML' : undefined,
     }));
@@ -108,19 +114,23 @@ async function sendMediaGroup(
     });
     
     const result = await response.json();
-    return result.ok;
+    if (result.ok) {
+      const messageIds = result.result.map((msg: { message_id: number }) => msg.message_id);
+      return { success: true, messageIds };
+    }
+    console.error(`Media group send failed:`, result);
+    return { success: false };
   } catch (error) {
     console.error(`Error sending media group to ${chatId}:`, error);
-    return false;
+    return { success: false };
   }
 }
 
-// Send message with optional buttons after media group
 async function sendButtonsAfterMedia(
   chatId: number,
   replyMarkup: object,
   protectContent: boolean = false
-): Promise<boolean> {
+): Promise<{ success: boolean; messageId?: number }> {
   try {
     const response = await fetch(`${TELEGRAM_API}${getBotToken()}/sendMessage`, {
       method: 'POST',
@@ -134,36 +144,86 @@ async function sendButtonsAfterMedia(
     });
     
     const result = await response.json();
-    return result.ok;
+    if (result.ok) {
+      return { success: true, messageId: result.result.message_id };
+    }
+    return { success: false };
   } catch (error) {
     console.error(`Error sending buttons to ${chatId}:`, error);
+    return { success: false };
+  }
+}
+
+async function deleteMessage(chatId: number, messageId: number): Promise<boolean> {
+  try {
+    const response = await fetch(`${TELEGRAM_API}${getBotToken()}/deleteMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        message_id: messageId,
+      }),
+    });
+    
+    const result = await response.json();
+    return result.ok;
+  } catch (error) {
+    console.error(`Error deleting message ${messageId} from ${chatId}:`, error);
     return false;
   }
 }
 
-// Send configured message to a user
+async function scheduleMessageDeletion(
+  chatId: number, 
+  messageIds: number[], 
+  hoursDelay: number
+): Promise<void> {
+  if (hoursDelay <= 0) return;
+  
+  const delayMs = hoursDelay * 60 * 60 * 1000;
+  
+  setTimeout(async () => {
+    for (const messageId of messageIds) {
+      await deleteMessage(chatId, messageId);
+    }
+  }, delayMs);
+}
+
 export async function sendConfiguredMessage(
   user: TelegramUser,
   config: MessageConfig,
   lang: Language
 ): Promise<SendResult> {
   const text = getLocalizedText(config, lang);
-  const media = getLocalizedMedia(config, lang);
+  const mediaItems = getLocalizedMedia(config, lang);
   const keyboard = buildInlineKeyboard(config, lang);
   
   let success = false;
+  const sentMessageIds: number[] = [];
   
-  if (media.length > 0) {
-    // Send as album with caption
-    success = await sendMediaGroup(user.id, media, text, config.protect_content);
+  if (mediaItems.length > 0) {
+    const mediaResult = await sendMediaGroup(user.id, mediaItems, text, config.protect_content);
+    success = mediaResult.success;
+    if (mediaResult.messageIds) {
+      sentMessageIds.push(...mediaResult.messageIds);
+    }
     
-    // Send buttons in a separate message if needed
     if (success && keyboard) {
-      await sendButtonsAfterMedia(user.id, keyboard, config.protect_content);
+      const buttonResult = await sendButtonsAfterMedia(user.id, keyboard, config.protect_content);
+      if (buttonResult.messageId) {
+        sentMessageIds.push(buttonResult.messageId);
+      }
     }
   } else {
-    // Send as regular text message
-    success = await sendMessage(user.id, text, keyboard, config.protect_content);
+    const messageResult = await sendMessage(user.id, text, keyboard, config.protect_content);
+    success = messageResult.success;
+    if (messageResult.messageId) {
+      sentMessageIds.push(messageResult.messageId);
+    }
+  }
+  
+  if (success && config.messageLifeHours > 0 && sentMessageIds.length > 0) {
+    scheduleMessageDeletion(user.id, sentMessageIds, config.messageLifeHours);
   }
   
   return {
@@ -175,7 +235,6 @@ export async function sendConfiguredMessage(
   };
 }
 
-// Send report to admin
 export async function sendReportToAdmin(report: SendReport): Promise<void> {
   const adminId = adminConfig.adminUserId;
   
@@ -196,7 +255,6 @@ Other: ${report.otherReached} (${report.otherPercentage.toFixed(1)}%)
   
   await sendMessage(adminId, reportText);
   
-  // Send JSON file with reached users
   const jsonContent = JSON.stringify(report.reachedUsers, null, 2);
   const blob = new Blob([jsonContent], { type: 'application/json' });
   
@@ -215,7 +273,6 @@ Other: ${report.otherReached} (${report.otherPercentage.toFixed(1)}%)
   }
 }
 
-// Send test message to admin
 export async function sendTestMessageToAdmin(config: MessageConfig, lang: Language): Promise<boolean> {
   const adminId = adminConfig.adminUserId;
   const adminUser: TelegramUser = {

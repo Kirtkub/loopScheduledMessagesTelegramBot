@@ -32,6 +32,12 @@ You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links<
   media_es: [],
   media_en: [],
 
+  // Array of Telegram video file_ids to send as album
+  // You can mix photos and videos in the same album
+  video_it: [],
+  video_es: [],
+  video_en: [],
+
   protect_content: true,
 
   buttons: [
@@ -44,7 +50,8 @@ You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links<
   ],
 
   // ============================================================================
-  // SCHEDULE (Day-based patterns - messages sent at 9:00 AM Madrid time)
+  // SCHEDULE (Day-based patterns - messages sent at configured time)
+  // See src/config/setHour.ts to change the daily execution time
   // 
   // PATTERN FORMATS:
   // 
@@ -67,6 +74,14 @@ You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links<
     // Example: send every Monday
     // 'MONDAY',
   ],
+
+  // ============================================================================
+  // MESSAGE LIFE HOURS
+  // Hours after which the message auto-deletes
+  // Set to 0 to never delete the message
+  // Default: 24 hours
+  // ============================================================================
+  messageLifeHours: 24,
 };
 
 export default message1;

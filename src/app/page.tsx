@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { allMessages } from '@/config/messages';
 import { MessageConfig, Language } from '@/types';
-import { formatSchedulePattern } from '@/lib/scheduler';
+import { formatSchedulePattern, DAILY_EXECUTION_TIME, TIMEZONE } from '@/lib/scheduler';
 
 type TabLanguage = 'it' | 'es' | 'en';
 
@@ -15,10 +15,18 @@ interface BotInfo {
   username: string;
 }
 
+interface MediaPreview {
+  type: 'photo' | 'video';
+  file_id: string;
+  url?: string;
+}
+
 function MessageCard({ message }: { message: MessageConfig }) {
   const [selectedLang, setSelectedLang] = useState<TabLanguage>('en');
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [mediaPreviews, setMediaPreviews] = useState<MediaPreview[]>([]);
+  const [loadingPreviews, setLoadingPreviews] = useState(false);
 
   const messageNumber = message.id.replace('message', '');
   const githubEditUrl = `${GITHUB_BASE_URL}/message${messageNumber}.ts`;
@@ -31,11 +39,19 @@ function MessageCard({ message }: { message: MessageConfig }) {
     }
   };
 
-  const getMedia = () => {
+  const getPhotos = () => {
     switch (selectedLang) {
       case 'it': return message.media_it;
       case 'es': return message.media_es;
       default: return message.media_en;
+    }
+  };
+
+  const getVideos = () => {
+    switch (selectedLang) {
+      case 'it': return message.video_it;
+      case 'es': return message.video_es;
+      default: return message.video_en;
     }
   };
 
@@ -46,6 +62,63 @@ function MessageCard({ message }: { message: MessageConfig }) {
       default: return btn.text_en;
     }
   };
+
+  useEffect(() => {
+    const loadPreviews = async () => {
+      const photos = getPhotos();
+      const videos = getVideos();
+      
+      if (photos.length === 0 && videos.length === 0) {
+        setMediaPreviews([]);
+        return;
+      }
+
+      setLoadingPreviews(true);
+      
+      const previews: MediaPreview[] = [];
+      
+      for (const fileId of photos) {
+        try {
+          const response = await fetch(`/api/messages?action=getFile&fileId=${encodeURIComponent(fileId)}`);
+          const data = await response.json();
+          if (data.success && data.hasFile) {
+            previews.push({
+              type: 'photo',
+              file_id: fileId,
+              url: `/api/messages?action=proxyFile&fileId=${encodeURIComponent(fileId)}`
+            });
+          } else {
+            previews.push({ type: 'photo', file_id: fileId });
+          }
+        } catch {
+          previews.push({ type: 'photo', file_id: fileId });
+        }
+      }
+      
+      for (const fileId of videos) {
+        try {
+          const response = await fetch(`/api/messages?action=getFile&fileId=${encodeURIComponent(fileId)}`);
+          const data = await response.json();
+          if (data.success && data.hasFile) {
+            previews.push({
+              type: 'video',
+              file_id: fileId,
+              url: `/api/messages?action=proxyFile&fileId=${encodeURIComponent(fileId)}`
+            });
+          } else {
+            previews.push({ type: 'video', file_id: fileId });
+          }
+        } catch {
+          previews.push({ type: 'video', file_id: fileId });
+        }
+      }
+      
+      setMediaPreviews(previews);
+      setLoadingPreviews(false);
+    };
+    
+    loadPreviews();
+  }, [selectedLang]);
 
   const sendTestMessage = async (lang: Language) => {
     setSending(true);
@@ -72,8 +145,19 @@ function MessageCard({ message }: { message: MessageConfig }) {
     setSending(false);
   };
 
-  const media = getMedia();
+  const photos = getPhotos();
+  const videos = getVideos();
+  const totalMedia = photos.length + videos.length;
   const validButtons = message.buttons.filter(btn => btn.url && (btn.text_it || btn.text_es || btn.text_en));
+
+  const formatMessageLife = (hours: number) => {
+    if (hours === 0) return 'Never deleted';
+    if (hours < 24) return `Deleted after ${hours} hour${hours > 1 ? 's' : ''}`;
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    if (remainingHours === 0) return `Deleted after ${days} day${days > 1 ? 's' : ''}`;
+    return `Deleted after ${days} day${days > 1 ? 's' : ''} ${remainingHours} hour${remainingHours > 1 ? 's' : ''}`;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -92,12 +176,27 @@ function MessageCard({ message }: { message: MessageConfig }) {
             Edit
           </a>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <span className={`px-2 py-1 text-xs rounded ${message.protect_content ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
             {message.protect_content ? 'Protected' : 'Not Protected'}
           </span>
-          <span className={`px-2 py-1 text-xs rounded ${media.length > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}>
-            {media.length > 0 ? `${media.length} Media` : 'No Media'}
+          {photos.length > 0 && (
+            <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+              {photos.length} Photo{photos.length > 1 ? 's' : ''}
+            </span>
+          )}
+          {videos.length > 0 && (
+            <span className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">
+              {videos.length} Video{videos.length > 1 ? 's' : ''}
+            </span>
+          )}
+          {totalMedia === 0 && (
+            <span className="px-2 py-1 text-xs rounded bg-gray-100 text-gray-600">
+              No Media
+            </span>
+          )}
+          <span className={`px-2 py-1 text-xs rounded ${message.messageLifeHours === 0 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
+            {message.messageLifeHours === 0 ? 'Permanent' : `${message.messageLifeHours}h life`}
           </span>
         </div>
       </div>
@@ -144,15 +243,56 @@ function MessageCard({ message }: { message: MessageConfig }) {
         )}
       </div>
 
-      {media.length > 0 && (
+      {totalMedia > 0 && (
         <div className="mb-4">
           <h3 className="text-sm font-semibold text-gray-600 mb-2">Media Attachments:</h3>
-          <div className="flex flex-wrap gap-2">
-            {media.map((fileId, index) => (
-              <div key={index} className="bg-blue-50 px-3 py-1 rounded text-sm text-blue-700">
-                Media #{index + 1}: {fileId.substring(0, 20)}...
-              </div>
-            ))}
+          {loadingPreviews ? (
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+              Loading previews...
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {mediaPreviews.map((preview, index) => (
+                <div key={index} className="relative rounded-lg overflow-hidden bg-gray-100 aspect-square">
+                  {preview.url ? (
+                    preview.type === 'photo' ? (
+                      <img 
+                        src={preview.url} 
+                        alt={`Media ${index + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <video 
+                        src={preview.url}
+                        className="w-full h-full object-contain"
+                        controls
+                        muted
+                      />
+                    )
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+                      {preview.type === 'photo' ? (
+                        <svg className="w-10 h-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-10 h-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                      <span className="text-xs">{preview.type === 'photo' ? 'Photo' : 'Video'} #{index + 1}</span>
+                    </div>
+                  )}
+                  <div className={`absolute top-1 right-1 px-2 py-0.5 text-xs rounded ${preview.type === 'photo' ? 'bg-blue-500' : 'bg-purple-500'} text-white`}>
+                    {preview.type === 'photo' ? 'Photo' : 'Video'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-2 text-xs text-gray-500">
+            File IDs: {[...photos, ...videos].map(id => id.substring(0, 15) + '...').join(', ')}
           </div>
         </div>
       )}
@@ -168,6 +308,13 @@ function MessageCard({ message }: { message: MessageConfig }) {
         ) : (
           <p className="text-sm text-gray-500 italic">No schedule configured (message will not be sent automatically)</p>
         )}
+      </div>
+
+      <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+        <h3 className="text-sm font-semibold text-orange-800 mb-1">Message Lifetime:</h3>
+        <p className="text-sm text-orange-700">
+          {formatMessageLife(message.messageLifeHours)}
+        </p>
       </div>
 
       <div className="border-t pt-4">
@@ -269,7 +416,8 @@ export default function Dashboard() {
           <h2 className="font-semibold text-blue-800 mb-2">Configuration Info</h2>
           <ul className="text-sm text-blue-700 list-disc list-inside">
             <li>Click the <strong>Edit</strong> button on each message to modify it on GitHub</li>
-            <li>Messages are sent daily at <strong>9:00 AM Madrid time</strong></li>
+            <li>Messages are sent daily at <strong>{DAILY_EXECUTION_TIME} {TIMEZONE}</strong></li>
+            <li>Modify <code className="bg-blue-100 px-1 rounded">src/config/setHour.ts</code> to change the execution time</li>
             <li>Admin reports are sent after each broadcast</li>
           </ul>
         </div>
