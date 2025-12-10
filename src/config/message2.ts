@@ -51,10 +51,10 @@ Join the affiliate program in the bot settings, <b>tell your friends and followe
   // "MONDAY-2"    = Second Monday of every month
   // "MONTHLY-15"  = 15th day of every month
   // ============================================================================
-  schedule: [],
+  schedule: ["SATURDAY", "WEDNESDAY"],
 
   // Hours after which the message auto-deletes (0 = never delete)
-  messageLifeHours: 72,
+  messageLifeHours: 70,
 };
 
 export default message2;
