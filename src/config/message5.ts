@@ -35,7 +35,13 @@ This is the fifth message in English.`,
 
   protect_content: true,
 
-  buttons: [],
+  buttons: [
+    {
+      text_it: '',
+      text_es: '',
+      text_en: '',
+      url: '',
+    }
 
   // ============================================================================
   // SCHEDULE (Day-based patterns - messages sent at configured time)
