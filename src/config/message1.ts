@@ -28,9 +28,9 @@ Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enla
 This is the message text in English.
 You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
 
-  media_it: [],
-  media_es: [],
-  media_en: [],
+  media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ", ""],
+  media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ", ""],
+  media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ", ""],
 
   protect_content: true,
 
