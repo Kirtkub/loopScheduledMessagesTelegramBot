@@ -35,7 +35,7 @@ Join the affiliate program in the bot settings, <b>tell your friends and followe
   media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ"],
   media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ"],
 
-  video_it: ["BAACAgQAAxkDAAJIe2k5bPdMdKTw0J5n1cBAyfy1wWxHAAJTHwAC343JUct6RmBBQO3dNgQ"],
+  video_it: ["BAACAgQAAxkDAAJIfWk5bPieammf22kxNVcdBIsrjwc0AAJVHwAC343JUS0xZzL6VllWNgQ"],
   video_es: ["BAACAgQAAxkDAAJIfGk5bPekyz0mmYQcedtNrMzfMLIIAAJUHwAC343JUWaOj4N-SeBoNgQ"],
   video_en: ["BAACAgQAAxkDAAJIe2k5bPdMdKTw0J5n1cBAyfy1wWxHAAJTHwAC343JUct6RmBBQO3dNgQ"],
 
@@ -54,7 +54,7 @@ Join the affiliate program in the bot settings, <b>tell your friends and followe
   schedule: [],
 
   // Hours after which the message auto-deletes (0 = never delete)
-  messageLifeHours: 24,
+  messageLifeHours: 72,
 };
 
 export default message2;
