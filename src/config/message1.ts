@@ -29,8 +29,8 @@ This is the message text in English.
 You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
 
   media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ", "BAACAgQAAxkDAAJIQ2k4yosUa-0_qC1ubfzT2u21vHjRAAKwJAACHoHIUfaESHpJpePQNgQ"],
-  media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ", ""],
-  media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ", ""],
+  media_es: [],
+  media_en: [],
 
   protect_content: true,
 
