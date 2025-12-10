@@ -13,20 +13,23 @@ import { MessageConfig } from '@/types';
 const message1: MessageConfig = {
   id: 'message1',
 
-  text_it: `<b>Messaggio 1</b>
+  text_it: `Condividerò con te
+<b>L'80% dei ricavi</b>
+da ogni utente che inviti
 
-Questo è il testo del messaggio in italiano.
-Puoi usare <b>grassetto</b>, <i>corsivo</i>, e <a href="https://example.com">link</a>.`,
+Unisciti al programma di affiliazione nelle impostazioni del bot, <b>dillo ai tuoi amici e ai tuoi follower</b> e inizia a guadagnare... 🥰😏`,
 
-  text_es: `<b>Mensaje 1</b>
+  text_es: `Compartiré contigo
+<b>el 80% de los ingresos</b>
+por cada usuario que invites
 
-Este es el texto del mensaje en español.
-Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enlaces</a>.`,
+Únete al programa de afiliados en los ajustes del bot, <b>cuéntaselo a tus amigos y seguidores</b> y empieza a ganar... 🥰😏`,
 
-  text_en: `<b>Message 1</b>
+  text_en: `I will share with you
+<b>80% of the revenue</b>
+for every user you invite
 
-This is the message text in English.
-You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
+Join the affiliate program in the bot settings, <b>tell your friends and followers</b> and start earning… 🥰😏`,
 
   media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ"],
   media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ"],
