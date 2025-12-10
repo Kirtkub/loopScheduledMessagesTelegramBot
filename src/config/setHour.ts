@@ -12,7 +12,7 @@
  * - "21:00" = 9:00 PM
  */
 
-export const DAILY_EXECUTION_TIME = "09:00";
+export const DAILY_EXECUTION_TIME = "15:00";
 
 export const TIMEZONE = "Europe/Madrid";
 
