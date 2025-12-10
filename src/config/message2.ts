@@ -40,10 +40,15 @@ Join the affiliate program in the bot settings, <b>tell your friends and followe
   video_en: [],
 
   protect_content: true,
-
-  buttons: [], // GUARDA MESSAGGIO 1 COME SI SCRIVONO I BOTTONI
   
-  
+  buttons: [
+    {
+      text_it: '',
+      text_es: '',
+      text_en: '',
+      url: '',
+    }
+    
   // ============================================================================
   // SCHEDULE (Day-based patterns - messages sent at configured time)
   // See src/config/setHour.ts to change the daily execution time
