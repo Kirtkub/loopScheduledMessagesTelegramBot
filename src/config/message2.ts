@@ -31,9 +31,9 @@ for every user you invite
 
 Join the affiliate program in the bot settings, <b>tell your friends and followers</b> and start earning… 🥰😏`,
 
-  media_it: [],
-  media_es: [],
-  media_en: [],
+  media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ"],
+  media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ"],
+  media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ"],
 
   video_it: [],
   video_es: [],
