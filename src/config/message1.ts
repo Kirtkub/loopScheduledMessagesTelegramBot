@@ -28,13 +28,13 @@ Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enla
 This is the message text in English.
 You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
 
-  media_it: ["BAACAgQAAxkBAAIe4Wa7F7OtLw7fpM_Iovzn4saeGREPAAL8FAACHR7YUajfZz7Dts8rNQQ"],
+  media_it: ["AgACAgQAAx0CeCtiogADiWX0bpqACkAr5dJGaPWyrh8vtHupAAJlvzEbjiahUzvfvNu0CDT8AQADAgADcwADNAQ"],
   media_es: [],
   media_en: [],
 
   // Array of Telegram video file_ids to send as album
   // You can mix photos and videos in the same album
-  video_it: [],
+  video_it: ["BAACAgQAAxkBAAIe4Wa7F7OtLw7fpM_Iovzn4saeGREPAAL8FAACHR7YUajfZz7Dts8rNQQ"],
   video_es: [],
   video_en: [],
 
