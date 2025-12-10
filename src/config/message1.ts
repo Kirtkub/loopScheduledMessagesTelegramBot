@@ -28,24 +28,24 @@ Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enla
 This is the message text in English.
 You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
 
-  media_it: ["AgACAgQAAx0CeCtiogADiWX0bpqACkAr5dJGaPWyrh8vtHupAAJlvzEbjiahUzvfvNu0CDT8AQADAgADcwADNAQ"],
-  media_es: [],
-  media_en: [],
+  media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ"],
+  media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ"],
+  media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ"],
 
   // Array of Telegram video file_ids to send as album
   // You can mix photos and videos in the same album
-  video_it: ["BAACAgQAAxkBAAIe4Wa7F7OtLw7fpM_Iovzn4saeGREPAAL8FAACHR7YUajfZz7Dts8rNQQ"],
-  video_es: [],
-  video_en: [],
+  video_it: ["BAACAgQAAxkDAAJIc2k5aLrtfVb1bGxZH7XuW8iQBAa9AAJFHwAC343JUcMEKaBVpJagNgQ"],
+  video_es: ["BAACAgQAAxkDAAJIdGk5aNCVlzI_PTPhWMFOIY8nBEk2AAJGHwAC343JUfEdGJVydc6NNgQ"],
+  video_en: ["BAACAgQAAxkDAAJIdWk5aPSz89nddJY4QRQ__ygYYYmQAAJIHwAC343JUY5rQCmk9rwvNgQ"],
 
   protect_content: true,
 
   buttons: [
     {
-      text_it: 'Scopri di più',
-      text_es: 'Descubre más',
-      text_en: 'Learn more',
-      url: 'https://example.com',
+      text_it: '',
+      text_es: '',
+      text_en: '',
+      url: '',
     },
   ],
 
