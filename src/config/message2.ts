@@ -13,42 +13,30 @@ import { MessageConfig } from '@/types';
 const message2: MessageConfig = {
   id: 'message2',
 
-  text_it: `Condividerò con te
-<b>L'80% dei ricavi</b>
-da ogni utente che inviti
+  text_it: `<b>Messaggio 2</b>
 
-Unisciti al programma di affiliazione nelle impostazioni del bot, <b>dillo ai tuoi amici e ai tuoi follower</b> e inizia a guadagnare... 🥰😏`,
+Questo è il secondo messaggio in italiano.`,
 
-  text_es: `Compartiré contigo
-<b>el 80% de los ingresos</b>
-por cada usuario que invites
+  text_es: `<b>Mensaje 2</b>
 
-Únete al programa de afiliados en los ajustes del bot, <b>cuéntaselo a tus amigos y seguidores</b> y empieza a ganar... 🥰😏`,
+Este es el segundo mensaje en español.`,
 
-  text_en: `I will share with you
-<b>80% of the revenue</b>
-for every user you invite
+  text_en: `<b>Message 2</b>
 
-Join the affiliate program in the bot settings, <b>tell your friends and followers</b> and start earning… 🥰😏`,
+This is the second message in English.`,
 
-  media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ"],
+  media_it: [],
   media_es: [],
   media_en: [],
 
-  video_it: ["BAACAgQAAxkDAAJIYmk5XpHM_yLbcpKjguk2-pRrb5_MAAIeHwAC343JUTeGCr34uQiWNgQ"],
+  video_it: [],
   video_es: [],
   video_en: [],
 
   protect_content: true,
-  
-  buttons: [
-    {
-      text_it: '',
-      text_es: '',
-      text_en: '',
-      url: '',
-    }
-    
+
+  buttons: [],
+
   // ============================================================================
   // SCHEDULE (Day-based patterns - messages sent at configured time)
   // See src/config/setHour.ts to change the daily execution time

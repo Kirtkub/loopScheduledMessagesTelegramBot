@@ -35,13 +35,7 @@ This is the third message in English.`,
 
   protect_content: true,
 
-  buttons: [
-    {
-      text_it: '',
-      text_es: '',
-      text_en: '',
-      url: '',
-    }
+  buttons: [],
 
   // ============================================================================
   // SCHEDULE (Day-based patterns - messages sent at configured time)

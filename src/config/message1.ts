@@ -13,42 +13,39 @@ import { MessageConfig } from '@/types';
 const message1: MessageConfig = {
   id: 'message1',
 
-  text_it: `Condividerò con te
-<b>L'80% dei ricavi</b>
-da ogni utente che inviti
+  text_it: `<b>Messaggio 1</b>
 
-Unisciti al programma di affiliazione nelle impostazioni del bot, <b>dillo ai tuoi amici e ai tuoi follower</b> e inizia a guadagnare... 🥰😏`,
+Questo è il testo del messaggio in italiano.
+Puoi usare <b>grassetto</b>, <i>corsivo</i>, e <a href="https://example.com">link</a>.`,
 
-  text_es: `Compartiré contigo
-<b>el 80% de los ingresos</b>
-por cada usuario que invites
+  text_es: `<b>Mensaje 1</b>
 
-Únete al programa de afiliados en los ajustes del bot, <b>cuéntaselo a tus amigos y seguidores</b> y empieza a ganar... 🥰😏`,
+Este es el texto del mensaje en español.
+Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enlaces</a>.`,
 
-  text_en: `I will share with you
-<b>80% of the revenue</b>
-for every user you invite
+  text_en: `<b>Message 1</b>
 
-Join the affiliate program in the bot settings, <b>tell your friends and followers</b> and start earning… 🥰😏`,
+This is the message text in English.
+You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
 
-  media_it: ["AgACAgQAAxkDAAJIOmk4vXPAbKs0ZkXcu4c58GPrRG_VAAKSDGsbHoHIUbVKJ7ujnAEKAQADAgADdwADNgQ"],
-  media_es: ["AgACAgQAAxkDAAJIOGk4vXIdMkWOIeZZGB1HeXyoSZQhAAKRDGsbHoHIUQPbC520OOLYAQADAgADdwADNgQ"],
-  media_en: ["AgACAgQAAxkDAAJINmk4vXBD9GyCiTnxodhWcvZx4NQQAAKQDGsbHoHIUVNVKthDBValAQADAgADdwADNgQ"],
+  media_it: ["BAACAgQAAxkBAAIe4Wa7F7OtLw7fpM_Iovzn4saeGREPAAL8FAACHR7YUajfZz7Dts8rNQQ"],
+  media_es: [],
+  media_en: [],
 
   // Array of Telegram video file_ids to send as album
   // You can mix photos and videos in the same album
-  video_it: ["BAACAgQAAxkDAAJIc2k5aLrtfVb1bGxZH7XuW8iQBAa9AAJFHwAC343JUcMEKaBVpJagNgQ"],
-  video_es: ["BAACAgQAAxkDAAJIdGk5aNCVlzI_PTPhWMFOIY8nBEk2AAJGHwAC343JUfEdGJVydc6NNgQ"],
-  video_en: ["BAACAgQAAxkDAAJIdWk5aPSz89nddJY4QRQ__ygYYYmQAAJIHwAC343JUY5rQCmk9rwvNgQ"],
+  video_it: [],
+  video_es: [],
+  video_en: [],
 
   protect_content: true,
 
   buttons: [
     {
-      text_it: '',
-      text_es: '',
-      text_en: '',
-      url: '',
+      text_it: 'Scopri di più',
+      text_es: 'Descubre más',
+      text_en: 'Learn more',
+      url: 'https://example.com',
     },
   ],
 
