@@ -13,17 +13,23 @@ import { MessageConfig } from '@/types';
 const message3: MessageConfig = {
   id: 'message3',
 
-  text_it: `<b>Messaggio 3</b>
+  text_it: `Hey amore ❤️🥰
+Come stai?
 
-Questo è il terzo messaggio in italiano.`,
+Per ascoltare la mia voce, scrivi:
+/audio`,
 
-  text_es: `<b>Mensaje 3</b>
+  text_es: `Hey amor ❤️🥰
+¿Cómo estás?
 
-Este es el tercer mensaje en español.`,
+Para escuchar mi voz, escribe:
+/audio`,
 
-  text_en: `<b>Message 3</b>
+  text_en: `Hey love ❤️🥰
+How are you?
 
-This is the third message in English.`,
+To hear my voice, type:
+/audio`,
 
   media_it: [],
   media_es: [],
@@ -45,10 +51,10 @@ This is the third message in English.`,
   // "MONDAY-2"    = Second Monday of every month
   // "MONTHLY-15"  = 15th day of every month
   // ============================================================================
-  schedule: [],
+  schedule: ["MONDAY", "THURSDAY",],
 
   // Hours after which the message auto-deletes (0 = never delete)
-  messageLifeHours: 24,
+  messageLifeHours: 23,
 };
 
 export default message3;
