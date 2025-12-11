@@ -85,6 +85,9 @@ buttons: [
   schedule: [
     // Example: send every Monday
     // 'MONDAY',
+    'FRIDAY',
+    'SUNDAY',
+    
   ],
 
   // ============================================================================
