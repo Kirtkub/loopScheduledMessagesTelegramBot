@@ -13,17 +13,17 @@ import { MessageConfig } from '@/types';
 const message4: MessageConfig = {
   id: 'message4',
 
-  text_it: `<b>Messaggio 4</b>
+  text_it: `Guarda come sono brava a fare la tua puttana 😏
+scrivi:
+<b>/photo</b>`,
 
-Questo è il quarto messaggio in italiano.`,
+  text_es: `Mira lo buena que soy haciendo de puta tuya 😏
+escribe:
+<b>/photo</b>`,
 
-  text_es: `<b>Mensaje 4</b>
-
-Este es el cuarto mensaje en español.`,
-
-  text_en: `<b>Message 4</b>
-
-This is the fourth message in English.`,
+  text_en: `Look how good I am at being your little whore 😏
+type:
+<b>/photo</b>`,
 
   media_it: [],
   media_es: [],
@@ -45,10 +45,10 @@ This is the fourth message in English.`,
   // "MONDAY-2"    = Second Monday of every month
   // "MONTHLY-15"  = 15th day of every month
   // ============================================================================
-  schedule: [],
+  schedule: ["TUESDAY"],
 
   // Hours after which the message auto-deletes (0 = never delete)
-  messageLifeHours: 24,
+  messageLifeHours: 23,
 };
 
 export default message4;
