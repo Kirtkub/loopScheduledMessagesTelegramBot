@@ -75,6 +75,7 @@ async function sendMessage(
         parse_mode: 'HTML',
         reply_markup: replyMarkup,
         protect_content: protectContent,
+        disable_web_page_preview: true,
       }),
     });
     
