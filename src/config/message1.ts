@@ -13,22 +13,28 @@ import { MessageConfig } from '@/types';
 const message1: MessageConfig = {
   id: 'message1',
 
-  text_it: `<b>Messaggio 1</b>
+  text_it: `Hey amore ❤️🥰
+Come stai?
 
-Questo è il testo del messaggio in italiano.
-Puoi usare <b>grassetto</b>, <i>corsivo</i>, e <a href="https://example.com">link</a>.`,
+<b>Per parlare con Cleo puoi</b>:
+🔹Iscriverti alla <a href="https://onlyfans.com/cleoyleo"><b>pagina OnlyFans</b></a> e usare la chat privata
+🔹Usare i messaggi privati nel <a href="https://t.me/+onqHnd30AFA5ZDVk"><b>Canale telegram di Cleo y Leo</b></a> (spendendo delle stelle telegram)`,
 
-  text_es: `<b>Mensaje 1</b>
+  text_es: `Hey amor ❤️🥰
+¿Cómo estás?
 
-Este es el texto del mensaje en español.
-Puedes usar <b>negrita</b>, <i>cursiva</i>, y <a href="https://example.com">enlaces</a>.`,
+<b>Para hablar con Cleo puedes</b>:
+🔹 Suscribirte a la <a href="https://onlyfans.com/cleoyleo"><b>página de OnlyFans</b></a> y usar el chat privado
+🔹 Usar los mensajes privados en el <a href="https://t.me/+onqHnd30AFA5ZDVk"><b>Canal de Telegram de Cleo y Leo</b></a> (utilizando estrellas de Telegram)`,
 
-  text_en: `<b>Message 1</b>
+  text_en: `Hey love ❤️🥰
+How are you?
 
-This is the message text in English.
-You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links</a>.`,
+<b>To talk with Cleo you can</b>:
+🔹 Subscribe to the <a href="https://onlyfans.com/cleoyleo"><b>OnlyFans page</b></a> and use the private chat
+🔹 Use private messages in the <a href="https://t.me/+onqHnd30AFA5ZDVk"><b>Cleo and Leo Telegram Channel</b></a> (using Telegram stars)`,
 
-  media_it: ["BAACAgQAAxkBAAIe4Wa7F7OtLw7fpM_Iovzn4saeGREPAAL8FAACHR7YUajfZz7Dts8rNQQ"],
+  media_it: [],
   media_es: [],
   media_en: [],
 
@@ -40,14 +46,20 @@ You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links<
 
   protect_content: true,
 
-  buttons: [
-    {
-      text_it: 'Scopri di più',
-      text_es: 'Descubre más',
-      text_en: 'Learn more',
-      url: 'https://example.com',
-    },
-  ],
+buttons: [
+  {
+    text_it: '✨ Vieni su OnlyFans',
+    text_es: '✨ Ven a OnlyFans',
+    text_en: '✨ Come to OnlyFans',
+    url: 'https://onlyfans.com/cleoyleo',
+  },
+  {
+    text_it: '💬 Vieni su Telegram',
+    text_es: '💬 Ven a Telegram',
+    text_en: '💬 Come to Telegram',
+    url: 'https://t.me/+onqHnd30AFA5ZDVk',
+  },
+],
 
   // ============================================================================
   // SCHEDULE (Day-based patterns - messages sent at configured time)
@@ -81,7 +93,7 @@ You can use <b>bold</b>, <i>italic</i>, and <a href="https://example.com">links<
   // Set to 0 to never delete the message
   // Default: 24 hours
   // ============================================================================
-  messageLifeHours: 24,
+  messageLifeHours: 23,
 };
 
 export default message1;
