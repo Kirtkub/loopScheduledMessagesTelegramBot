@@ -3,6 +3,8 @@ import { allMessages } from '@/config/messages';
 import { shouldSendToday } from '@/lib/scheduler';
 import { sendMessageToAllUsers } from '@/lib/sender';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
