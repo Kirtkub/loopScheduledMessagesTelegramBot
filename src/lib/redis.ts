@@ -90,17 +90,28 @@ export async function getEnglishUsers(): Promise<TelegramUser[]> {
 
 // Get all users
 export async function getAllUsers(): Promise<TelegramUser[]> {
-  const userIds = await getUserIdsFromSet(REDIS_KEYS.ALL);
-  const users: TelegramUser[] = [];
-  
-  for (const id of userIds) {
-    const user = await getUserById(id);
-    if (user) {
-      users.push(user);
+  try {
+    const userIds = await getUserIdsFromSet(REDIS_KEYS.ALL);
+    const users: TelegramUser[] = [];
+    
+    // Using pipeline for faster fetching
+    const pipeline = redis.pipeline();
+    for (const id of userIds) {
+      pipeline.get(`user:${id}`);
     }
+    const results = await pipeline.exec();
+    
+    for (const userData of results) {
+      if (userData) {
+        users.push(typeof userData === 'string' ? JSON.parse(userData) : userData as TelegramUser);
+      }
+    }
+    
+    return users;
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    return [];
   }
-  
-  return users;
 }
 
 // Get users grouped by language

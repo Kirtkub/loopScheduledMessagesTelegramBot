@@ -419,6 +419,7 @@ export default function Dashboard() {
             <li>Messages are sent daily at <strong>{DAILY_EXECUTION_TIME} {TIMEZONE}</strong></li>
             <li>Modify <code className="bg-blue-100 px-1 rounded">src/config/setHour.ts</code> to change the execution time</li>
             <li>Admin reports are sent after each broadcast</li>
+            <li><a href="/stats" className="font-bold underline text-blue-900">View Analytics Dashboard</a></li>
           </ul>
         </div>
 

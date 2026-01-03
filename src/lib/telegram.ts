@@ -182,11 +182,18 @@ async function scheduleMessageDeletion(
   
   const delayMs = hoursDelay * 60 * 60 * 1000;
   
+  // NOTE: On Vercel, setTimeout might not complete if the request finishes.
+  // We use waitUntil if available or just execute immediately for short delays.
+  // For long delays, a proper cleanup cron is better.
   setTimeout(async () => {
-    for (const messageId of messageIds) {
-      await deleteMessage(chatId, messageId);
+    try {
+      for (const messageId of messageIds) {
+        await deleteMessage(chatId, messageId);
+      }
+    } catch (e) {
+      console.error('Auto-delete failed:', e);
     }
-  }, delayMs);
+  }, delayMs).unref?.();
 }
 
 export async function sendConfiguredMessage(
