@@ -13,6 +13,8 @@ import { format, subDays, isAfter } from 'date-fns';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+export const dynamic = 'force-dynamic';
+
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

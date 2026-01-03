@@ -1,0 +1,82 @@
+14:13:44.269 Running build in Washington, D.C., USA (East) – iad1
+14:13:44.276 Build machine configuration: 2 cores, 8 GB
+14:13:44.300 Cloning github.com/Kirtkub/loopScheduledMessagesTelegramBot (Branch: main, Commit: 6a4ad99)
+14:13:44.304 Skipping build cache, deployment was triggered without cache.
+14:13:44.855 Cloning completed: 554.000ms
+14:13:45.509 Running "vercel build"
+14:13:45.933 Vercel CLI 50.1.3
+14:13:46.266 Installing dependencies...
+14:13:57.286 
+14:13:57.287 added 151 packages in 11s
+14:13:57.287 
+14:13:57.287 28 packages are looking for funding
+14:13:57.287   run `npm fund` for details
+14:13:57.354 Detected Next.js version: 14.2.33
+14:13:57.357 Running "npm run build"
+14:13:57.470 
+14:13:57.471 > telegram-scheduled-messages@1.0.0 build
+14:13:57.471 > next build
+14:13:57.471 
+14:13:58.080 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+14:13:58.081 This information is used to shape Next.js' roadmap and prioritize features.
+14:13:58.082 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+14:13:58.082 https://nextjs.org/telemetry
+14:13:58.082 
+14:13:58.136   ▲ Next.js 14.2.33
+14:13:58.137 
+14:13:58.155    Creating an optimized production build ...
+14:14:16.620  ✓ Compiled successfully
+14:14:16.622    Linting and checking validity of types ...
+14:14:20.397    Collecting page data ...
+14:14:20.779 [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+14:14:21.860    Generating static pages (0/10) ...
+14:14:22.095    Generating static pages (2/10) 
+14:14:22.319    Generating static pages (4/10) 
+14:14:22.351 [Upstash Redis] Redis client was initialized without url or token. Failed to execute command.
+14:14:26.680 Error fetching reports: B [Error]: Dynamic server usage: no-store fetch https://adapted-bream-25174.upstash.io /api/stats
+14:14:26.682     at /vercel/path0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:37206
+14:14:26.683     at /vercel/path0/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+14:14:26.684     at NoopContextManager.with (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+14:14:26.684     at ContextAPI.with (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+14:14:26.684     at NoopTracer.startActiveSpan (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+14:14:26.685     at ProxyTracer.startActiveSpan (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+14:14:26.685     at /vercel/path0/node_modules/next/dist/server/lib/trace/tracer.js:122:103
+14:14:26.685     at NoopContextManager.with (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+14:14:26.686     at ContextAPI.with (/vercel/path0/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+14:14:26.686     at NextTracerImpl.trace (/vercel/path0/node_modules/next/dist/server/lib/trace/tracer.js:122:28) {
+14:14:26.686   description: 'no-store fetch https://adapted-bream-25174.upstash.io /api/stats',
+14:14:26.686   digest: 'DYNAMIC_SERVER_USAGE'
+14:14:26.687 }
+14:14:27.137    Generating static pages (7/10) 
+14:14:27.376  ✓ Generating static pages (10/10)
+14:14:27.389    Finalizing page optimization ...
+14:14:27.390    Collecting build traces ...
+14:14:27.393 
+14:14:27.404 Route (app)                              Size     First Load JS
+14:14:27.404 ┌ ○ /                                    5.98 kB        93.3 kB
+14:14:27.404 ├ ○ /_not-found                          873 B          88.2 kB
+14:14:27.405 ├ ○ /api/bot-info                        0 B                0 B
+14:14:27.405 ├ ƒ /api/cron                            0 B                0 B
+14:14:27.405 ├ ƒ /api/messages                        0 B                0 B
+14:14:27.405 ├ ƒ /api/stats                           0 B                0 B
+14:14:27.405 ├ ƒ /api/test-send                       0 B                0 B
+14:14:27.405 └ ○ /stats                               129 kB          217 kB
+14:14:27.405 + First Load JS shared by all            87.3 kB
+14:14:27.405   ├ chunks/117-78babbc8520bd6a0.js       31.7 kB
+14:14:27.405   ├ chunks/fd9d1056-8e6e5948b34abff3.js  53.6 kB
+14:14:27.405   └ other shared chunks (total)          1.96 kB
+14:14:27.406 
+14:14:27.406 
+14:14:27.406 ○  (Static)   prerendered as static content
+14:14:27.406 ƒ  (Dynamic)  server-rendered on demand
+14:14:27.406 
+14:14:27.979 Traced Next.js server files in: 32.97ms
+14:14:28.084 Created all serverless functions in: 104.673ms
+14:14:28.095 Collected static files (public/, static/, .next/static): 5.682ms
+14:14:28.153 Build Completed in /vercel/output [42s]
+14:14:28.289 Deploying outputs...
+14:14:34.423 Deployment completed
+14:14:35.362 Creating build cache...
+14:14:46.436 Created build cache: 11.068s
+14:14:46.436 Uploading build cache [139.66 MB]
+14:14:49.177 Build cache uploaded: 2.745s

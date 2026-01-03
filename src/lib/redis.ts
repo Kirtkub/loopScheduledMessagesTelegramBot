@@ -4,10 +4,10 @@ import { TelegramUser, Language, SendReport } from '@/types';
 // Initialize Redis client with environment variables
 // These should be set in Vercel:
 // - KV_REST_API_URL
-// - KV_REST_API_READ_ONLY_TOKEN (used as token)
+// - KV_REST_API_TOKEN (used as token)
 const redis = new Redis({
   url: process.env.KV_REST_API_URL || '',
-  token: process.env.KV_REST_API_READ_ONLY_TOKEN || '',
+  token: process.env.KV_REST_API_TOKEN || '',
 });
 
 // Redis set keys for different language groups
