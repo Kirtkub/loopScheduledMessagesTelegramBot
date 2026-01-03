@@ -12,9 +12,9 @@
  * - "21:00" = 9:00 PM
  */
 
-export const DAILY_EXECUTION_TIME = "09:00";
+export const DAILY_EXECUTION_TIME = "10:00";
 
-export const TIMEZONE = "Europe/Madrid";
+export const TIMEZONE = "UTC";
 
 export function getExecutionHour(): number {
   const [hours] = DAILY_EXECUTION_TIME.split(':').map(Number);

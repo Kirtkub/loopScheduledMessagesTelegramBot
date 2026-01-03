@@ -1,38 +1,30 @@
 import { MessageConfig, SendResult, SendReport, TelegramUser, Language } from '@/types';
-import { getUsersByLanguage, getUserLanguage } from './redis';
-import { sendConfiguredMessage, sendReportToAdmin } from './telegram';
+import { getAllUsers, deleteUser, saveReport } from './redis';
+import { sendConfiguredMessage, sendReportToAdmin, sendUsersJsonToAdmin } from './telegram';
+
+export function getUserLanguage(user: TelegramUser): Language {
+  const lang = user.languageCode?.toLowerCase() || '';
+  if (lang.startsWith('it')) return 'it';
+  if (lang.startsWith('es')) return 'es';
+  return 'en';
+}
 
 // Send a message to all users and generate report
 export async function sendMessageToAllUsers(config: MessageConfig): Promise<SendReport> {
-  const { italian, spanish, other } = await getUsersByLanguage();
+  const allUsers = await getAllUsers();
   
   const results: SendResult[] = [];
   const reachedUsers: TelegramUser[] = [];
   
-  // Send to Italian users
-  for (const user of italian) {
-    const result = await sendConfiguredMessage(user, config, 'it');
+  for (const user of allUsers) {
+    const lang = getUserLanguage(user);
+    const result = await sendConfiguredMessage(user, config, lang);
     results.push(result);
+    
     if (result.success) {
       reachedUsers.push(user);
-    }
-  }
-  
-  // Send to Spanish users
-  for (const user of spanish) {
-    const result = await sendConfiguredMessage(user, config, 'es');
-    results.push(result);
-    if (result.success) {
-      reachedUsers.push(user);
-    }
-  }
-  
-  // Send to other users (English default)
-  for (const user of other) {
-    const result = await sendConfiguredMessage(user, config, 'en');
-    results.push(result);
-    if (result.success) {
-      reachedUsers.push(user);
+    } else if (result.error === 'Forbidden: bot was blocked by the user' || result.error?.includes('bot was blocked')) {
+      await deleteUser(user.id.toString());
     }
   }
   
@@ -61,8 +53,15 @@ export async function sendMessageToAllUsers(config: MessageConfig): Promise<Send
     reachedUsers,
   };
   
+  // Save report to database (without the huge user list to save space)
+  const { reachedUsers: _, ...statsReport } = report;
+  await saveReport(statsReport);
+  
   // Send report to admin
   await sendReportToAdmin(report);
+  
+  // Send JSON file to admin
+  await sendUsersJsonToAdmin(report);
   
   return report;
 }

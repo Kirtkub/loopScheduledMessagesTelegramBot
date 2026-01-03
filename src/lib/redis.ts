@@ -1,5 +1,5 @@
 import { Redis } from '@upstash/redis';
-import { TelegramUser, Language } from '@/types';
+import { TelegramUser, Language, SendReport } from '@/types';
 
 // Initialize Redis client with environment variables
 // These should be set in Vercel:
@@ -124,10 +124,48 @@ export async function getUsersByLanguage(): Promise<{
   return { italian, spanish, other };
 }
 
-// Determine user's language group
-export function getUserLanguage(user: TelegramUser): Language {
-  const lang = user.languageCode?.toLowerCase() || '';
-  if (lang.startsWith('it')) return 'it';
-  if (lang.startsWith('es')) return 'es';
-  return 'en';
+// Delete user from all sets and their data
+export async function deleteUser(userId: string): Promise<void> {
+  try {
+    const pipeline = redis.pipeline();
+    pipeline.del(`user:${userId}`);
+    pipeline.srem(REDIS_KEYS.ALL, userId);
+    pipeline.srem(REDIS_KEYS.IT, userId);
+    pipeline.srem(REDIS_KEYS.ES, userId);
+    pipeline.srem(REDIS_KEYS.EN, userId);
+    await pipeline.exec();
+    console.log(`User ${userId} deleted from database (bot blocked).`);
+  } catch (error) {
+    console.error(`Error deleting user ${userId}:`, error);
+  }
+}
+
+// Save report for statistics
+export async function saveReport(report: Omit<SendReport, 'reachedUsers'>): Promise<void> {
+  try {
+    const reportId = `report:${report.timestamp.replace(/[:.]/g, '-')}`;
+    await redis.set(reportId, JSON.stringify(report));
+    await redis.lpush('reports:list', reportId);
+    // Keep only last 100 reports for speed/storage
+    await redis.ltrim('reports:list', 0, 99);
+  } catch (error) {
+    console.error('Error saving report:', error);
+  }
+}
+
+export async function getReports(limit: number = 90): Promise<Omit<SendReport, 'reachedUsers'>[]> {
+  try {
+    const reportIds = await redis.lrange('reports:list', 0, limit - 1);
+    const reports: Omit<SendReport, 'reachedUsers'>[] = [];
+    for (const id of reportIds) {
+      const data = await redis.get(id as string);
+      if (data) {
+        reports.push(typeof data === 'string' ? JSON.parse(data) : data);
+      }
+    }
+    return reports;
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    return [];
+  }
 }

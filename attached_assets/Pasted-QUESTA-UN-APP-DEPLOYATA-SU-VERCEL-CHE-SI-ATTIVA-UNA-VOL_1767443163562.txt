@@ -1,0 +1,28 @@
+QUESTA È UN APP DEPLOYATA SU VERCEL CHE SI ATTIVA UNA VOLTA AL GIORNO (il massimo che permette il piano gratuito di vercel)
+E INVIA I MESSAGGI PROGRAMMATI IN TRE LINGUE DIVERSE ATTRAVERSO UN BOT TELEGRAM.
+
+Aggiorna questa applicazione:
+- Cambia l’orario di attivazione predefinito e mettilo alle 10 gmt
+- quando l’app invia un messaggio, deve provarlo a inviarlo a tutti gli utenti del database.
+- L’app deve eliminare dal database gli utenti a cui non è arrivato il messaggio perché il bot è stato bloccato.
+- L’app deve salvare nel database il report dell’invio del messaggio per creare delle statistiche
+- Aggiungi una pagina di statistiche alla webapp
+    - Devono apparire in grande i dati dell’ultimo report:
+        - Numero totale di utenti a cui si è provato a inviare il messaggio
+        - Numero di utenti raggiunti dall’ultimo messaggio inviato e percentuale rispetto al totale di utenti a cui si è inviato il messaggio
+        - Percentuale di utenti raggiunti con il messaggio in lingua inglese (rispetto a tutti quelli raggiunti) e numero effettivo degli utenti raggiunti di lingua inglese
+        - Percentuale di utenti raggiunti con il messaggio in lingua italiana (rispetto a tutti  quelli raggiunti) e numero effettivo degli utenti raggiunti di lingua italiana
+        - Percentuale di utenti raggiunti con il messaggio in lingua spagnola (rispetto a tutti quelli raggiunti) e numero effettivo degli utenti raggiunti di lingua spagnola
+    - Ci devono essere dei grafici a linee che mostrano i dati temporalmente (l’utente puo selezionare il periodo (ultimi 7, 30, 90 giorni o da sempre):
+        - Grafico a linee che mostra il numero di utenti a cui il messaggio è stato inviato con successo ogni report del periodo selezionato, quando hover vengono mostrati tutti gli altri dati piu specifici). Nello stesso grafico, lo sfondo si colora diversamente (diverse gradazioni di colori dal rosso al giallo al verde) a seconda della percentuale di utenti raggiunti rispetto al totale di utenti totali a cui si è provato ad inviare il messaggio (in rosso lo sfondo dei giorni in cui la percentuale è piu bassa, in verde lo sfondo dei giorni in cui la percentuale è piu alta).
+        - Grafico a linee: tre linee che mostrano il totale di utenti raggiunti per ognuna delle tre lingue (a hover specifiche: numero, e percentuale).
+- Quando si completa l’invio del messaggio a tutti gli utenti, invia un messaggio di successo su telegram con il report all’admin
+- Dopo il messaggio di report invia un file json su telegram, all’admin, con l’elenco degli utenti a cui si  è riusciti a inviare il messaggio. Il file json  deve chiamarsi con la data e l’ora del giorno (AAAA_MM_DD_hh_mm_report_01, AAAA_MM_DD_hh_mm_report_02 se è il secondo report del giorno, AAAA_MM_DD_hh_mm_report_03 se è il terzo report del giorno e cosi via, anche se prevedo di avere solo un report al giorno)
+- Risolvi il bug: adesso l’autoeliminazione dei messaggi non è settata correttamente, perché i messaggi che vengono inviati non si eliminano dopo il tempo programmato, ma rimangono nella chat per sempre. Correggi il bug e fai in modo che l’autoeliminazione funzioni, si dovrebbe poter fare con le api di telegram.
+- Proteggi la webapp da con una password che l’admin deve inserire pero poter accedere, memorizza nella cache del browser se l’admin è gia entrato e a gia inserito la password cosi da non chiederla tutte le volte
+- Aggiorna le variabili ambiente necessarie
+VARIABILI AMBIENTE:
+KV_REST_API_TOKEN
+KV_REST_API_URL
+TELEGRAM_BOT_TOKEN
+ADMIN_PASSWORD

@@ -64,7 +64,7 @@ async function sendMessage(
   text: string,
   replyMarkup?: object,
   protectContent: boolean = false
-): Promise<{ success: boolean; messageId?: number }> {
+): Promise<{ success: boolean; messageId?: number; error?: string }> {
   try {
     const response = await fetch(`${TELEGRAM_API}${getBotToken()}/sendMessage`, {
       method: 'POST',
@@ -83,10 +83,10 @@ async function sendMessage(
     if (result.ok) {
       return { success: true, messageId: result.result.message_id };
     }
-    return { success: false };
+    return { success: false, error: result.description };
   } catch (error) {
     console.error(`Error sending message to ${chatId}:`, error);
-    return { success: false };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -95,7 +95,7 @@ async function sendMediaGroup(
   mediaItems: MediaItem[],
   caption: string,
   protectContent: boolean = false
-): Promise<{ success: boolean; messageIds?: number[] }> {
+): Promise<{ success: boolean; messageIds?: number[]; error?: string }> {
   try {
     const media = mediaItems.map((item, index) => ({
       type: item.type,
@@ -119,11 +119,10 @@ async function sendMediaGroup(
       const messageIds = result.result.map((msg: { message_id: number }) => msg.message_id);
       return { success: true, messageIds };
     }
-    console.error(`Media group send failed:`, result);
-    return { success: false };
+    return { success: false, error: result.description };
   } catch (error) {
     console.error(`Error sending media group to ${chatId}:`, error);
-    return { success: false };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -131,7 +130,7 @@ async function sendButtonsAfterMedia(
   chatId: number,
   replyMarkup: object,
   protectContent: boolean = false
-): Promise<{ success: boolean; messageId?: number }> {
+): Promise<{ success: boolean; messageId?: number; error?: string }> {
   try {
     const response = await fetch(`${TELEGRAM_API}${getBotToken()}/sendMessage`, {
       method: 'POST',
@@ -148,10 +147,10 @@ async function sendButtonsAfterMedia(
     if (result.ok) {
       return { success: true, messageId: result.result.message_id };
     }
-    return { success: false };
+    return { success: false, error: result.description };
   } catch (error) {
     console.error(`Error sending buttons to ${chatId}:`, error);
-    return { success: false };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -200,11 +199,13 @@ export async function sendConfiguredMessage(
   const keyboard = buildInlineKeyboard(config, lang);
   
   let success = false;
+  let error: string | undefined;
   const sentMessageIds: number[] = [];
   
   if (mediaItems.length > 0) {
     const mediaResult = await sendMediaGroup(user.id, mediaItems, text, config.protect_content);
     success = mediaResult.success;
+    error = mediaResult.error;
     if (mediaResult.messageIds) {
       sentMessageIds.push(...mediaResult.messageIds);
     }
@@ -218,6 +219,7 @@ export async function sendConfiguredMessage(
   } else {
     const messageResult = await sendMessage(user.id, text, keyboard, config.protect_content);
     success = messageResult.success;
+    error = messageResult.error;
     if (messageResult.messageId) {
       sentMessageIds.push(messageResult.messageId);
     }
@@ -232,7 +234,7 @@ export async function sendConfiguredMessage(
     username: user.username,
     success,
     language: lang,
-    error: success ? undefined : 'Failed to send message',
+    error,
   };
 }
 
@@ -240,29 +242,38 @@ export async function sendReportToAdmin(report: SendReport): Promise<void> {
   const adminId = adminConfig.adminUserId;
   
   const reportText = `
-<b>Message Delivery Report</b>
+✅ <b>Message Delivery Report</b>
 <b>Message ID:</b> ${report.messageId}
 <b>Sent at:</b> ${report.timestamp}
 
-<b>Total Users:</b> ${report.totalUsers}
+<b>Total Users Attempted:</b> ${report.totalUsers}
 <b>Successfully Reached:</b> ${report.successCount} (${report.successPercentage.toFixed(1)}%)
-<b>Failed:</b> ${report.failedCount}
+<b>Failed/Blocked:</b> ${report.failedCount}
 
 <b>Language Breakdown:</b>
-Italian: ${report.italianReached} (${report.italianPercentage.toFixed(1)}%)
-Spanish: ${report.spanishReached} (${report.spanishPercentage.toFixed(1)}%)
-Other: ${report.otherReached} (${report.otherPercentage.toFixed(1)}%)
+🇮🇹 Italian: ${report.italianReached} (${report.italianPercentage.toFixed(1)}%)
+🇪🇸 Spanish: ${report.spanishReached} (${report.spanishPercentage.toFixed(1)}%)
+🇬🇧 English/Other: ${report.otherReached} (${report.otherPercentage.toFixed(1)}%)
 `;
   
   await sendMessage(adminId, reportText);
+}
+
+export async function sendUsersJsonToAdmin(report: SendReport): Promise<void> {
+  const adminId = adminConfig.adminUserId;
+  const now = new Date();
+  const format = (n: number) => n.toString().padStart(2, '0');
+  const dateStr = `${now.getFullYear()}_${format(now.getMonth() + 1)}_${format(now.getDate())}_${format(now.getHours())}_${format(now.getMinutes())}`;
   
+  const fileName = `${dateStr}_report_01.json`;
+
   const jsonContent = JSON.stringify(report.reachedUsers, null, 2);
   const blob = new Blob([jsonContent], { type: 'application/json' });
   
   const formData = new FormData();
   formData.append('chat_id', String(adminId));
-  formData.append('document', blob, `reached_users_${report.messageId}_${Date.now()}.json`);
-  formData.append('caption', `Users reached for message ${report.messageId}`);
+  formData.append('document', blob, fileName);
+  formData.append('caption', `JSON report for message ${report.messageId}`);
   
   try {
     await fetch(`${TELEGRAM_API}${getBotToken()}/sendDocument`, {
@@ -273,6 +284,7 @@ Other: ${report.otherReached} (${report.otherPercentage.toFixed(1)}%)
     console.error('Error sending JSON file to admin:', error);
   }
 }
+
 
 export async function sendTestMessageToAdmin(config: MessageConfig, lang: Language): Promise<boolean> {
   const adminId = adminConfig.adminUserId;
